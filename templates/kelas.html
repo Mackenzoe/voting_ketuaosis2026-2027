@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Pilih Kelas {{ grade }}{% endblock %}
+{% block page_class %}page-kelas{% endblock %}
+{% block content %}
+<section class="panel reveal class-panel">
+  <div class="panel-header-row">
+    <a class="back-link" href="{{ url_for('tingkat') }}">← Pilih Tingkat Lain</a>
+    <div class="grade-pill-tag">Tingkat {{ grade }}</div>
+  </div>
+
+  <h1 class="panel-title">Daftar Kelas {{ grade }}</h1>
+  <p class="panel-desc">Silakan pilih kelas spesifikmu untuk melanjutkan verifikasi data siswa.</p>
+
+  {% if classes %}
+  <div class="class-search-box">
+    <span class="search-icon">🔍</span>
+    <input type="search" id="class-filter-input" placeholder="Cari nama kelas (contoh: {{ grade }}.1)…" autocomplete="off">
+  </div>
+
+  <form class="class-form" method="post" action="{{ url_for('pilih_kelas') }}" id="form-pilih-kelas">
+    <div class="class-grid-cards" id="class-cards-container">
+      {% for c in classes %}
+      <label class="class-card-item">
+        <input type="radio" name="kelas" value="{{ c }}" required>
+        <div class="class-card-inner">
+          <div class="class-card-icon">🏫</div>
+          <div class="class-card-info">
+            <span class="class-card-name">Kelas {{ c }}</span>
+            <span class="class-card-sub">SMA IGS</span>
+          </div>
+          <div class="class-card-check">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+      </label>
+      {% endfor %}
+    </div>
+
+    <div class="class-form-action">
+      <button type="submit" class="btn btn-primary class-submit-btn" id="btn-submit-kelas">
+        <span>Lanjut Verifikasi Data Siswa</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+          <polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </button>
+    </div>
+  </form>
+  {% else %}
+  <div class="empty-state-box">
+    <span class="empty-icon">📂</span>
+    <p class="empty-note">Data kelas untuk tingkat {{ grade }} belum tersedia.</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    var searchInput = document.getElementById("class-filter-input");
+    var container = document.getElementById("class-cards-container");
+    if (searchInput && container) {
+      searchInput.addEventListener("input", function () {
+        var query = searchInput.value.trim().toLowerCase();
+        var items = container.querySelectorAll(".class-card-item");
+        items.forEach(function (item) {
+          var text = item.textContent.toLowerCase();
+          if (!query || text.indexOf(query) !== -1) {
+            item.style.display = "";
+          } else {
+            item.style.display = "none";
+          }
+        });
+      });
+
+      searchInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          var query = searchInput.value.trim().toLowerCase();
+          var items = container.querySelectorAll(".class-card-item");
+          items.forEach(function (item) {
+            var text = item.textContent.toLowerCase();
+            if (!query || text.indexOf(query) !== -1) {
+              item.style.display = "";
+            } else {
+              item.style.display = "none";
+            }
+          });
+        }
+      });
+    }
+  })();
+</script>
+{% endblock %}

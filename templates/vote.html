@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Pilih Kandidat{% endblock %}
+{% block page_class %}page-vote{% endblock %}
+{% block content %}
+<section class="panel vote-panel reveal">
+  <h1 class="panel-title">Pilih Ketua OSIS</h1>
+  <p class="panel-desc">
+    Halo, <strong>{{ voter_nama }}</strong>
+    {% if role == 'siswa' %}(Siswa){% else %}(Guru){% endif %} —
+    pilih salah satu calon. Suara hanya bisa diberikan sekali.
+  </p>
+
+  <form method="post" action="{{ url_for('vote') }}" id="vote-form">
+    <input type="hidden" name="candidate_id" id="candidate_id" value="">
+    <div class="candidate-row">
+      {% for c in candidates %}
+      <button
+        type="button"
+        class="candidate-bubble theme-{{ c.theme }}"
+        data-id="{{ c.id }}"
+        data-name="{{ c.name }}"
+        aria-label="Pilih nomor {{ c.id }} {{ c.name }}"
+      >
+        <span class="cand-num">{{ c.id }}</span>
+        <span class="cand-glass">
+          <img src="{{ url_for('static', filename=c.image) }}" alt="{{ c.name }}" loading="lazy">
+        </span>
+        <span class="cand-name">{{ c.name }}</span>
+      </button>
+      {% endfor %}
+    </div>
+  </form>
+</section>
+
+<dialog class="confirm-dialog" id="confirm-dialog">
+  <form method="dialog" class="confirm-box">
+    <h2>Konfirmasi Pilihan</h2>
+    <p>Kamu akan memilih <strong id="confirm-name"></strong>. Lanjutkan?</p>
+    <div class="confirm-actions">
+      <button value="cancel" class="btn btn-ghost">Batal</button>
+      <button value="ok" class="btn btn-primary" id="confirm-ok">Ya, Pilih</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+{% block scripts %}
+<script>
+  (function () {
+    var form = document.getElementById("vote-form");
+    var hidden = document.getElementById("candidate_id");
+    var dialog = document.getElementById("confirm-dialog");
+    var nameEl = document.getElementById("confirm-name");
+    var pendingId = null;
+
+    document.querySelectorAll(".candidate-bubble").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        pendingId = btn.getAttribute("data-id");
+        nameEl.textContent = "No. " + pendingId + " — " + btn.getAttribute("data-name");
+        if (typeof dialog.showModal === "function") {
+          dialog.showModal();
+        } else if (window.confirm("Pilih " + nameEl.textContent + "?")) {
+          hidden.value = pendingId;
+          form.submit();
+        }
+      });
+    });
+
+    dialog.addEventListener("close", function () {
+      if (dialog.returnValue === "ok" && pendingId) {
+        hidden.value = pendingId;
+        form.submit();
+      }
+    });
+  })();
+</script>
+{% endblock %}

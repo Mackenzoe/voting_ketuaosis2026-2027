@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Sudah Memilih{% endblock %}
+{% block content %}
+<section class="panel reveal narrow center-text">
+  <div class="status-icon warn" aria-hidden="true">!</div>
+  <h1 class="panel-title">Kamu Sudah Memilih</h1>
+  <p class="panel-desc">
+    Halo{% if nama %}, <strong>{{ nama }}</strong>{% endif %} —
+    hak pilih {{ role_label|lower }} sudah digunakan sebelumnya.
+  </p>
+  <p class="soft-note">
+    Setiap siswa (NIS) dan setiap guru hanya boleh memilih satu kali
+    demi menjaga keadilan pemilihan.
+  </p>
+  <a class="btn btn-primary" href="{{ url_for('home') }}">Kembali ke Beranda</a>
+</section>
+{% endblock %}

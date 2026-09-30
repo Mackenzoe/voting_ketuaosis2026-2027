@@ -1,0 +1,316 @@
+/* Live Videotron — bersih, kontras tinggi, terpusat sempurna saat fullscreen */
+
+:root {
+  --bg: #071521;
+  --panel: rgba(255, 255, 255, 0.07);
+  --panel-border: rgba(255, 255, 255, 0.14);
+  --ink: #f4fbff;
+  --muted: #9fc0d4;
+  --pink: #ff8fb0;
+  --blue: #5ec4ff;
+  --gold: #ffd24a;
+  --font-display: "Fredoka", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background:
+    radial-gradient(ellipse 90% 60% at 50% -10%, #184263 0%, transparent 70%),
+    radial-gradient(ellipse 70% 50% at 50% 110%, #0d2e46 0%, transparent 70%),
+    linear-gradient(180deg, #0a1a28 0%, #071521 50%, #081d2c 100%);
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+.live-body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(1rem, 2.5vw, 1.75rem) clamp(1rem, 3vw, 2.5rem);
+}
+
+.live-header {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.live-brand {
+  display: flex;
+  flex-direction: column;
+}
+
+.live-kicker {
+  display: block;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  font-size: clamp(0.75rem, 1.5vw, 0.9rem);
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.live-brand h1 {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3.8vw, 2.6rem);
+  font-weight: 700;
+  line-height: 1.1;
+  background: linear-gradient(180deg, #ffffff, #d2ecff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.live-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.live-pill {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1.5px solid var(--panel-border);
+  border-radius: 20px;
+  padding: 0.6rem 1.1rem;
+  min-width: 130px;
+  text-align: right;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.live-pill span {
+  display: block;
+  font-size: 0.78rem;
+  color: var(--muted);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.live-pill strong {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+  color: #fff;
+}
+
+.logo-ardraxis {
+  width: clamp(52px, 5vw, 68px);
+  height: clamp(52px, 5vw, 68px);
+  border-radius: 50%;
+  object-fit: contain;
+  background: #000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Main Section — Centered Fullscreen Container */
+.live-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 0;
+}
+
+.live-note {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.4rem 1.2rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Board — Perfect Center Grid */
+.live-board {
+  width: 100%;
+  max-width: 1320px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1rem, 2.5vw, 2.2rem);
+  align-items: center;
+  justify-content: center;
+  place-items: center;
+  margin: 0 auto;
+}
+
+/* Card Styling — Uniform & Balanced */
+.live-card {
+  width: 100%;
+  max-width: 410px;
+  margin: 0 auto;
+  background: var(--panel);
+  backdrop-filter: blur(16px);
+  border: 2px solid var(--panel-border);
+  border-radius: 32px;
+  padding: clamp(1.25rem, 2.5vw, 2rem) clamp(1rem, 2vw, 1.75rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.65rem;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.live-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.theme-pink.live-card::before { background: radial-gradient(circle at 50% 0%, var(--pink), transparent 70%); }
+.theme-blue.live-card::before { background: radial-gradient(circle at 50% 0%, var(--blue), transparent 70%); }
+.theme-gold.live-card::before { background: radial-gradient(circle at 50% 0%, var(--gold), transparent 70%); }
+
+.live-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.45);
+}
+
+.live-rank {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.25rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.theme-pink .live-rank,
+.theme-pink .live-score { color: var(--pink); }
+.theme-blue .live-rank,
+.theme-blue .live-score { color: var(--blue); }
+.theme-gold .live-rank,
+.theme-gold .live-score { color: var(--gold); }
+
+.live-photo {
+  width: clamp(130px, 15vw, 190px);
+  height: clamp(130px, 15vw, 190px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  padding: 6px;
+  margin: 0.25rem 0;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.theme-pink .live-photo {
+  background: linear-gradient(145deg, rgba(255, 143, 176, 0.6), rgba(255, 255, 255, 0.15));
+}
+
+.theme-blue .live-photo {
+  background: linear-gradient(145deg, rgba(94, 196, 255, 0.6), rgba(255, 255, 255, 0.15));
+}
+
+.theme-gold .live-photo {
+  background: linear-gradient(145deg, rgba(255, 210, 74, 0.6), rgba(255, 255, 255, 0.15));
+}
+
+.live-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 50%;
+  display: block;
+}
+
+.live-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.2vw, 1.45rem);
+  line-height: 1.25;
+  color: #fff;
+  max-width: 18ch;
+  text-align: center;
+}
+
+.live-score {
+  font-family: var(--font-display);
+  font-size: clamp(3.2rem, 6.5vw, 5.2rem);
+  font-weight: 700;
+  line-height: 1;
+  margin: 0.1rem 0;
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.live-sub {
+  color: var(--muted);
+  font-weight: 700;
+  font-size: clamp(0.88rem, 1.6vw, 1.05rem);
+}
+
+.live-bar {
+  width: 100%;
+  height: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  margin-top: 0.35rem;
+}
+
+.live-bar i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-pink .live-bar i { background: linear-gradient(90deg, #ffc0d4, var(--pink)); box-shadow: 0 0 12px var(--pink); }
+.theme-blue .live-bar i { background: linear-gradient(90deg, #a8e0ff, var(--blue)); box-shadow: 0 0 12px var(--blue); }
+.theme-gold .live-bar i { background: linear-gradient(90deg, #ffe9a0, var(--gold)); box-shadow: 0 0 12px var(--gold); }
+
+/* Responsive adjustments for Videotron Screens */
+@media (max-height: 750px) {
+  .live-photo {
+    width: clamp(100px, 12vw, 140px);
+    height: clamp(100px, 12vw, 140px);
+  }
+  .live-score {
+    font-size: clamp(2.6rem, 5vw, 3.8rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .live-board {
+    grid-template-columns: 1fr;
+    max-width: 420px;
+  }
+  .live-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .live-meta {
+    width: 100%;
+    justify-content: center;
+  }
+}

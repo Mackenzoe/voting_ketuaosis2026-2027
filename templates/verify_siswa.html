@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Verifikasi Siswa{% endblock %}
+{% block content %}
+<section class="panel reveal narrow">
+  <a class="back-link" href="{{ url_for('kelas_list') }}">← Kembali</a>
+  <h1 class="panel-title">Verifikasi Hak Pilih</h1>
+  <p class="panel-desc">
+    Kelas: <strong>{{ session.kelas }}</strong><br>
+    Masukkan Nama Lengkap dan NISN sesuai data sekolah.
+  </p>
+
+  <form class="verify-form" method="post" action="{{ url_for('verify_siswa') }}" autocomplete="off">
+    <label class="field">
+      <span>Nama Lengkap</span>
+      <input type="text" name="nama" required autofocus placeholder="Sesuai daftar absensi" maxlength="120">
+    </label>
+    <label class="field">
+      <span>NISN</span>
+      <input type="text" name="nisn" required placeholder="Contoh: 26.3361" maxlength="32" inputmode="decimal" autocomplete="off">
+    </label>
+    <button type="submit" class="btn btn-primary">Verifikasi &amp; Lanjut</button>
+  </form>
+</section>
+{% endblock %}

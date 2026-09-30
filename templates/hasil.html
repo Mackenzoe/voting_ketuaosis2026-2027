@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Hasil Voting{% endblock %}
+{% block content %}
+<section class="panel reveal">
+  <a class="back-link" href="{{ url_for('home') }}">← Beranda</a>
+  <h1 class="panel-title">Hasil Sementara</h1>
+  <p class="panel-desc">
+    Total suara masuk: <strong>{{ total_votes }}</strong>
+    · Bonus +{{ bonus_points }} otomatis untuk No. {{ bonus_candidate_id }}
+  </p>
+
+  {% set total_final = candidates|sum(attribute='final') %}
+  <div class="result-list">
+    {% for c in candidates %}
+    {% set pct = ((c.final / total_final * 100) if total_final else 0) %}
+    <div class="result-row theme-{{ c.theme }}">
+      <div class="result-head">
+        <img src="{{ url_for('static', filename=c.image) }}" alt="">
+        <div>
+          <strong>No. {{ c.id }} — {{ c.name }}</strong>
+          <span>
+            {{ c.votes }} suara
+            {% if c.bonus %}+ {{ c.bonus }} bonus{% endif %}
+            = <b>{{ c.final }} poin</b>
+            ({{ "%.1f"|format(pct) }}%)
+          </span>
+        </div>
+      </div>
+      <div class="result-bar"><i style="width: {{ pct }}%"></i></div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,9 @@
+# Voting OSIS
+votes.db
+votes.db-*
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.log

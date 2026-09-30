@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Panel Admin{% endblock %}
+{% block page_class %}page-admin{% endblock %}
+{% block content %}
+<section class="panel reveal admin-panel">
+  <div class="admin-top">
+    <div>
+      <p class="eyebrow">Panel Admin OSIS</p>
+      <h1 class="panel-title">Dashboard Voting</h1>
+      <p class="panel-desc">Statistik partisipasi, daftar belum memilih, dan akses videotron.</p>
+    </div>
+    <div class="admin-top-actions">
+      <a class="btn btn-cta admin-live-btn" href="{{ url_for('live_videotron') }}" target="_blank" rel="noopener">
+        📺 Live Videotron
+      </a>
+      <a class="btn btn-ghost admin-logout-btn" href="{{ url_for('admin_logout') }}">
+        🚪 Keluar Admin
+      </a>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span>Total Pemilih Terdaftar</span>
+      <strong>{{ stats.eligible_total }}</strong>
+      <small>{{ stats.eligible_siswa }} siswa · {{ stats.eligible_guru }} guru</small>
+    </div>
+    <div class="stat-card">
+      <span>Sudah Voting</span>
+      <strong>{{ stats.voted_total }}</strong>
+      <small>{{ stats.voted_siswa }} siswa · {{ stats.voted_guru }} guru</small>
+    </div>
+    <div class="stat-card">
+      <span>Belum Voting</span>
+      <strong>{{ stats.pending_total }}</strong>
+      <small>Perlu ditindaklanjuti</small>
+    </div>
+    <div class="stat-card accent">
+      <span>Partisipasi</span>
+      <strong>{{ stats.participation_pct }}%</strong>
+      <small>Kehadiran hak pilih</small>
+    </div>
+  </div>
+
+  <div class="admin-scores">
+    <h2 class="section-title">Skor Sementara (+{{ bonus_points }} bonus No. 1)</h2>
+    <div class="admin-score-row">
+      {% for c in board.candidates %}
+      <div class="admin-score theme-{{ c.theme }}">
+        <strong>No. {{ c.id }} {{ c.name }}</strong>
+        <span>{{ c.votes }} suara{% if c.bonus %} + {{ c.bonus }} bonus{% endif %} = <b>{{ c.final }}</b></span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="admin-tables">
+    <div class="admin-table-block">
+      <div class="table-head">
+        <h2 class="section-title">Siswa Belum Voting ({{ pending_siswa|length }})</h2>
+        <input type="search" class="table-filter" data-target="tbl-siswa" placeholder="Cari nama / kelas / NISN…">
+      </div>
+      <div class="table-scroll">
+        <table class="data-table" id="tbl-siswa">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>NISN</th>
+              <th>Tingkat</th>
+              <th>Kelas</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for s in pending_siswa %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ s.nama }}</td>
+              <td>{{ s.nis }}</td>
+              <td>{{ s.tingkat }}</td>
+              <td>{{ s.kelas }}</td>
+              <td><span class="badge warn">Belum</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="empty-cell">Semua siswa sudah memilih.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-table-block">
+      <div class="table-head">
+        <h2 class="section-title">Guru Belum Voting ({{ pending_guru|length }})</h2>
+        <input type="search" class="table-filter" data-target="tbl-guru" placeholder="Cari nama guru…">
+      </div>
+      <div class="table-scroll short">
+        <table class="data-table" id="tbl-guru">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama Guru</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for g in pending_guru %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ g.nama }}</td>
+              <td><span class="badge warn">Belum</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" class="empty-cell">Semua guru sudah memilih.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.querySelectorAll(".table-filter").forEach(function (input) {
+    input.addEventListener("input", function () {
+      var q = input.value.trim().toLowerCase();
+      var table = document.getElementById(input.getAttribute("data-target"));
+      if (!table) return;
+      table.querySelectorAll("tbody tr").forEach(function (row) {
+        if (row.querySelector(".empty-cell")) return;
+        row.hidden = q && row.textContent.toLowerCase().indexOf(q) === -1;
+      });
+    });
+  });
+</script>
+{% endblock %}

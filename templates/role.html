@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Pilih Peran{% endblock %}
+{% block content %}
+<section class="panel reveal">
+  <a class="back-link" href="{{ url_for('home') }}">← Kembali</a>
+  <h1 class="panel-title">Siapakah kamu?</h1>
+  <p class="panel-desc">Pilih peran untuk melanjutkan proses voting.</p>
+
+  <div class="choice-grid">
+    <a class="choice-card theme-blue" href="{{ url_for('set_role', role_name='siswa') }}">
+      <span class="choice-icon icon-siswa" aria-hidden="true"></span>
+      <strong>Siswa</strong>
+      <span>Pilih tingkat &amp; kelas, lalu verifikasi NIS</span>
+    </a>
+    <a class="choice-card theme-gold" href="{{ url_for('set_role', role_name='guru') }}">
+      <span class="choice-icon icon-guru" aria-hidden="true"></span>
+      <strong>Guru</strong>
+      <span>Pilih namamu dari daftar guru</span>
+    </a>
+  </div>
+</section>
+{% endblock %}

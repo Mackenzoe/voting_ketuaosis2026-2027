@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}Login Admin{% endblock %}
+{% block page_class %}page-admin-login{% endblock %}
+{% block content %}
+<section class="panel reveal narrow admin-login-card">
+  <div class="admin-login-header">
+    <div class="admin-badge-icon" aria-hidden="true">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <path d="M12 8v4"></path>
+        <path d="M12 16h.01"></path>
+      </svg>
+    </div>
+    <span class="admin-login-chip">Restricted Area</span>
+    <h1 class="panel-title">Login Admin</h1>
+    <p class="panel-desc">Masuk untuk mengelola hasil voting, statistik, dan videotron OSIS SMA IGS.</p>
+  </div>
+
+  <form class="verify-form admin-form" method="post" action="{{ url_for('admin_login') }}" autocomplete="on" id="admin-login-form">
+    <label class="field">
+      <span>Username Admin</span>
+      <div class="input-wrap">
+        <input
+          type="text"
+          name="username"
+          required
+          autofocus
+          placeholder="Username"
+          maxlength="64"
+          value="{{ username|default('', true) }}"
+          autocomplete="username"
+          spellcheck="false"
+        >
+      </div>
+    </label>
+
+    <label class="field">
+      <span>Password</span>
+      <div class="input-wrap password-field-wrap">
+        <input
+          type="password"
+          id="admin-password-input"
+          name="password"
+          required
+          placeholder="••••••••••••"
+          maxlength="64"
+          autocomplete="current-password"
+        >
+        <button type="button" class="btn-toggle-pw" id="toggle-pw-btn" title="Tampilkan/sembunyikan password" aria-label="Toggle Password">
+          👁️
+        </button>
+      </div>
+    </label>
+
+    <button type="submit" class="btn btn-admin-primary" id="admin-login-btn">
+      <span>Masuk Panel Admin</span>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+      </svg>
+    </button>
+  </form>
+
+  <div class="admin-login-footer">
+    <a class="back-link" href="{{ url_for('home') }}">← Kembali ke Beranda</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    var toggleBtn = document.getElementById("toggle-pw-btn");
+    var pwInput = document.getElementById("admin-password-input");
+    if (toggleBtn && pwInput) {
+      toggleBtn.addEventListener("click", function () {
+        var isPw = pwInput.type === "password";
+        pwInput.type = isPw ? "text" : "password";
+        toggleBtn.textContent = isPw ? "🙈" : "👁️";
+      });
+    }
+
+    var form = document.getElementById("admin-login-form");
+    var btn = document.getElementById("admin-login-btn");
+    if (form && btn) {
+      form.addEventListener("submit", function () {
+        setTimeout(function () {
+          btn.disabled = true;
+          btn.classList.add("loading");
+        }, 0);
+      });
+    }
+  })();
+</script>
+{% endblock %}

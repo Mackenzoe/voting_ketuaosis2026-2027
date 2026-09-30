@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b1c2c">
+  <title>Live Skor Videotron · OSIS SMA IGS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/live.css') }}">
+</head>
+<body class="live-body">
+  <header class="live-header">
+    <div class="live-brand">
+      <span class="live-kicker">PEMILIHAN KETUA OSIS</span>
+      <h1>SMA IGS 2026–2027</h1>
+    </div>
+    <div class="live-meta">
+      <div class="live-pill">
+        <span>Partisipasi</span>
+        <strong id="partisipasi">—</strong>
+      </div>
+      <div class="live-pill">
+        <span>Suara Masuk</span>
+        <strong id="total-suara">—</strong>
+      </div>
+      <img
+        class="logo-ardraxis"
+        src="{{ url_for('static', filename='img/logo_ardraxis.png') }}"
+        alt="Ardraxis"
+        width="64"
+        height="64"
+      >
+    </div>
+  </header>
+
+  <main class="live-main">
+    <div class="live-board" id="live-board">
+      {% for c in candidates %}
+      <article class="live-card theme-{{ c.theme }}" data-id="{{ c.id }}">
+        <div class="live-rank">No. {{ c.id }}</div>
+        <div class="live-photo">
+          <img src="{{ url_for('static', filename=c.image) }}" alt="{{ c.name }}">
+        </div>
+        <h2 class="live-name">{{ c.name }}</h2>
+        <div class="live-score" data-score>—</div>
+        <div class="live-sub" data-sub>0 suara</div>
+        <div class="live-bar"><i data-bar style="width:0%"></i></div>
+      </article>
+      {% endfor %}
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var POLL_MS = 2500;
+      var board = document.getElementById("live-board");
+      var totalEl = document.getElementById("total-suara");
+      var partEl = document.getElementById("partisipasi");
+
+      function render(data) {
+        if (!data || !data.ok) return;
+        totalEl.textContent = data.voted_total + " / " + data.eligible_total;
+        partEl.textContent = data.participation_pct + "%";
+
+        var maxFinal = 1;
+        data.candidates.forEach(function (c) {
+          if (c.final > maxFinal) maxFinal = c.final;
+        });
+
+        data.candidates.forEach(function (c) {
+          var card = board.querySelector('[data-id="' + c.id + '"]');
+          if (!card) return;
+          var score = card.querySelector("[data-score]");
+          var sub = card.querySelector("[data-sub]");
+          var bar = card.querySelector("[data-bar]");
+          score.textContent = c.final;
+          sub.textContent = c.bonus
+            ? c.votes + " suara + " + c.bonus + " bonus"
+            : c.votes + " suara";
+          bar.style.width = Math.max(4, (c.final / maxFinal) * 100) + "%";
+        });
+      }
+
+      function tick() {
+        fetch("{{ url_for('api_live_scores') }}", { cache: "no-store" })
+          .then(function (r) { return r.json(); })
+          .then(render)
+          .catch(function () {});
+      }
+
+      tick();
+      setInterval(tick, POLL_MS);
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Terima Kasih{% endblock %}
+{% block content %}
+<section class="panel reveal narrow center-text">
+  <div class="status-icon ok" aria-hidden="true">✓</div>
+  <h1 class="panel-title">Suara Berhasil Tersimpan</h1>
+  <p class="panel-desc">
+    Terima kasih sudah berpartisipasi{% if candidate %} —
+    kamu memilih <strong>No. {{ candidate.id }} {{ candidate.name }}</strong>{% endif %}.
+  </p>
+  <p class="soft-note">Hak pilihmu sudah digunakan dan tidak dapat diubah.</p>
+  {% if session.get('guru_auth') %}
+  <a class="btn btn-primary" href="{{ url_for('guru_list') }}">Pilih Guru Berikutnya</a>
+  <a class="btn btn-ghost" href="{{ url_for('home') }}" style="margin-top:0.75rem;width:100%">Kembali ke Beranda</a>
+  {% else %}
+  <a class="btn btn-primary" href="{{ url_for('home') }}">Kembali ke Beranda</a>
+  {% endif %}
+</section>
+{% endblock %}

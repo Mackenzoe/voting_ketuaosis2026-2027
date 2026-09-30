@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Login Guru{% endblock %}
+{% block content %}
+<section class="panel reveal narrow">
+  <a class="back-link" href="{{ url_for('role') }}">← Kembali</a>
+  <h1 class="panel-title">Login Guru</h1>
+  <p class="panel-desc">Masukkan kredensial guru IGS untuk membuka daftar hak suara.</p>
+
+  <form class="verify-form" method="post" action="{{ url_for('guru_login') }}" autocomplete="on" id="guru-login-form">
+    <label class="field">
+      <span>Username</span>
+      <input
+        type="text"
+        name="username"
+        required
+        autofocus
+        placeholder="Username"
+        maxlength="64"
+        value="{{ username|default('', true) }}"
+        autocomplete="username"
+      >
+    </label>
+    <label class="field">
+      <span>Password</span>
+      <input
+        type="password"
+        name="password"
+        required
+        placeholder="Password"
+        maxlength="64"
+        autocomplete="current-password"
+      >
+    </label>
+    <button type="submit" class="btn btn-primary" id="guru-login-btn">Masuk</button>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  (function () {
+    var form = document.getElementById("guru-login-form");
+    var btn = document.getElementById("guru-login-btn");
+    if (!form || !btn) return;
+    form.addEventListener("submit", function () {
+      // Jangan disable sebelum request terkirim (bug browser klasik)
+      setTimeout(function () {
+        btn.disabled = true;
+        btn.textContent = "Memproses…";
+      }, 0);
+    });
+  })();
+</script>
+{% endblock %}

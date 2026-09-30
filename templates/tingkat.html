@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Pilih Tingkat{% endblock %}
+{% block content %}
+<section class="panel reveal">
+  <a class="back-link" href="{{ url_for('role') }}">← Kembali</a>
+  <h1 class="panel-title">Pilih Tingkat Kelas</h1>
+  <p class="panel-desc">Tentukan jenjang kelasmu terlebih dahulu.</p>
+
+  <div class="choice-grid three">
+    <a class="choice-card theme-pink" href="{{ url_for('set_tingkat', grade='10') }}">
+      <strong class="big-num">10</strong>
+      <span>Kelas 10</span>
+    </a>
+    <a class="choice-card theme-blue" href="{{ url_for('set_tingkat', grade='11') }}">
+      <strong class="big-num">11</strong>
+      <span>Kelas 11</span>
+    </a>
+    <a class="choice-card theme-gold" href="{{ url_for('set_tingkat', grade='12') }}">
+      <strong class="big-num">12</strong>
+      <span>Kelas 12</span>
+    </a>
+  </div>
+</section>
+{% endblock %}

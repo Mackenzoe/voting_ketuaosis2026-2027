@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Daftar Guru{% endblock %}
+{% block content %}
+<section class="panel reveal">
+  <a class="back-link" href="{{ url_for('role') }}">← Kembali</a>
+  <h1 class="panel-title">Pilih Nama Guru</h1>
+  <p class="panel-desc">Cari dan pilih namamu dari daftar guru terdaftar.</p>
+
+  <div class="search-bar">
+    <input type="search" id="guru-search" placeholder="Ketik untuk mencari nama…" aria-label="Cari nama guru">
+  </div>
+
+  <form method="post" action="{{ url_for('pilih_guru') }}" id="guru-form">
+    <input type="hidden" name="nama" id="guru-nama" value="">
+    <div class="teacher-grid" id="teacher-grid">
+      {% for t in teachers %}
+      <button type="button" class="teacher-chip" data-nama="{{ t }}">{{ t }}</button>
+      {% endfor %}
+    </div>
+  </form>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  (function () {
+    var search = document.getElementById("guru-search");
+    var grid = document.getElementById("teacher-grid");
+    var form = document.getElementById("guru-form");
+    var hidden = document.getElementById("guru-nama");
+    if (!search || !grid) return;
+
+    search.addEventListener("input", function () {
+      var q = search.value.trim().toLowerCase();
+      grid.querySelectorAll(".teacher-chip").forEach(function (btn) {
+        var name = (btn.getAttribute("data-nama") || "").toLowerCase();
+        btn.hidden = q && name.indexOf(q) === -1;
+      });
+    });
+
+    search.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        var q = search.value.trim().toLowerCase();
+        grid.querySelectorAll(".teacher-chip").forEach(function (btn) {
+          var name = (btn.getAttribute("data-nama") || "").toLowerCase();
+          btn.hidden = q && name.indexOf(q) === -1;
+        });
+      }
+    });
+
+    grid.addEventListener("click", function (e) {
+      var btn = e.target.closest(".teacher-chip");
+      if (!btn) return;
+      hidden.value = btn.getAttribute("data-nama");
+      form.submit();
+    });
+  })();
+</script>
+{% endblock %}
