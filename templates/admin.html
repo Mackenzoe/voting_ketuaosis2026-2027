@@ -57,8 +57,70 @@
   <div class="admin-tables">
     <div class="admin-table-block">
       <div class="table-head">
+        <h2 class="section-title">Siswa Sudah Voting ({{ all_votes|selectattr('role', 'equalto', 'siswa')|list|length }})</h2>
+        <input type="search" class="table-filter" data-target="tbl-siswa-votes" placeholder="Cari nama / kelas / kandidat…">
+      </div>
+      <div class="table-scroll">
+        <table class="data-table" id="tbl-siswa-votes">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama</th>
+              <th>Kelas</th>
+              <th>NIS</th>
+              <th>Pilih No.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in all_votes|selectattr('role', 'equalto', 'siswa') %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ v.nama }}</td>
+              <td>{{ v.kelas }}</td>
+              <td>{{ v.nis }}</td>
+              <td><span class="badge success">No. {{ v.candidate_id }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="empty-cell">Belum ada siswa yang voting.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-table-block">
+      <div class="table-head">
+        <h2 class="section-title">Guru Sudah Voting ({{ all_votes|selectattr('role', 'equalto', 'guru')|list|length }})</h2>
+        <input type="search" class="table-filter" data-target="tbl-guru-votes" placeholder="Cari nama guru / kandidat…">
+      </div>
+      <div class="table-scroll short">
+        <table class="data-table" id="tbl-guru-votes">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Nama Guru</th>
+              <th>Pilih No.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in all_votes|selectattr('role', 'equalto', 'guru') %}
+            <tr>
+              <td>{{ loop.index }}</td>
+              <td>{{ v.nama }}</td>
+              <td><span class="badge success">No. {{ v.candidate_id }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" class="empty-cell">Belum ada guru yang voting.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-table-block">
+      <div class="table-head">
         <h2 class="section-title">Siswa Belum Voting ({{ pending_siswa|length }})</h2>
-        <input type="search" class="table-filter" data-target="tbl-siswa" placeholder="Cari nama / kelas / NISN…">
+        <input type="search" class="table-filter" data-target="tbl-siswa" placeholder="Cari nama / kelas / NIS…">
       </div>
       <div class="table-scroll">
         <table class="data-table" id="tbl-siswa">
@@ -66,7 +128,7 @@
             <tr>
               <th>No</th>
               <th>Nama</th>
-              <th>NISN</th>
+              <th>NIS</th>
               <th>Tingkat</th>
               <th>Kelas</th>
               <th>Status</th>

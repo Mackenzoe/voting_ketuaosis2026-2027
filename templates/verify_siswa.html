@@ -6,7 +6,7 @@
   <h1 class="panel-title">Verifikasi Hak Pilih</h1>
   <p class="panel-desc">
     Kelas: <strong>{{ session.kelas }}</strong><br>
-    Masukkan Nama Lengkap dan NISN sesuai data sekolah.
+    Masukkan Nama Lengkap dan NIS sesuai data sekolah.
   </p>
 
   <form class="verify-form" method="post" action="{{ url_for('verify_siswa') }}" autocomplete="off">
@@ -15,8 +15,8 @@
       <input type="text" name="nama" required autofocus placeholder="Sesuai daftar absensi" maxlength="120">
     </label>
     <label class="field">
-      <span>NISN</span>
-      <input type="text" name="nisn" required placeholder="Contoh: 26.3361" maxlength="32" inputmode="decimal" autocomplete="off">
+      <span>NIS</span>
+      <input type="text" name="nis" required placeholder="Contoh: 26.3361" maxlength="32" inputmode="decimal" autocomplete="off">
     </label>
     <button type="submit" class="btn btn-primary">Verifikasi &amp; Lanjut</button>
   </form>

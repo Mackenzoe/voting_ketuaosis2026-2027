@@ -7,7 +7,12 @@
   <p class="panel-desc">Cari dan pilih namamu dari daftar guru terdaftar.</p>
 
   <div class="search-bar">
-    <input type="search" id="guru-search" placeholder="Ketik untuk mencari nama…" aria-label="Cari nama guru">
+    <input type="search" id="guru-search" list="teacher-suggestions" placeholder="Ketik untuk mencari nama…" aria-label="Cari nama guru">
+    <datalist id="teacher-suggestions">
+      {% for t in teachers %}
+      <option value="{{ t }}">
+      {% endfor %}
+    </datalist>
   </div>
 
   <form method="post" action="{{ url_for('pilih_guru') }}" id="guru-form">
@@ -45,6 +50,21 @@
           var name = (btn.getAttribute("data-nama") || "").toLowerCase();
           btn.hidden = q && name.indexOf(q) === -1;
         });
+      }
+    });
+
+    // Auto-submit when selecting from datalist
+    search.addEventListener("change", function () {
+      var selectedName = search.value.trim();
+      if (selectedName) {
+        var teachers = [];
+        grid.querySelectorAll(".teacher-chip").forEach(function (btn) {
+          teachers.push(btn.getAttribute("data-nama"));
+        });
+        if (teachers.includes(selectedName)) {
+          hidden.value = selectedName;
+          form.submit();
+        }
       }
     });
 

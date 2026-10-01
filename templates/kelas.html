@@ -14,7 +14,12 @@
   {% if classes %}
   <div class="class-search-box">
     <span class="search-icon">🔍</span>
-    <input type="search" id="class-filter-input" placeholder="Cari nama kelas (contoh: {{ grade }}.1)…" autocomplete="off">
+    <input type="search" id="class-filter-input" list="class-suggestions" placeholder="Cari nama kelas (contoh: {{ grade }}.1)…" autocomplete="off">
+    <datalist id="class-suggestions">
+      {% for c in classes %}
+      <option value="{{ c }}">
+      {% endfor %}
+    </datalist>
   </div>
 
   <form class="class-form" method="post" action="{{ url_for('pilih_kelas') }}" id="form-pilih-kelas">

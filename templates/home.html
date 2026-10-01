@@ -2,6 +2,14 @@
 {% block title %}Beranda Voting OSIS{% endblock %}
 {% block page_class %}page-home{% endblock %}
 {% block content %}
+{% if voting_closed %}
+<section class="panel reveal" style="text-align: center; padding: 4rem 2rem; max-width: 800px; margin: 0 auto;">
+  <h1 class="panel-title" style="font-size: 2.5rem; margin-bottom: 1.5rem;">Voting Telah Berakhir</h1>
+  <p class="panel-desc" style="font-size: 1.3rem; line-height: 1.8; color: var(--ink);">
+    Ditunggu hasil ya teman-teman, semoga hasil voting ini menjadi awal dari masa depan yang lebih baik
+  </p>
+</section>
+{% else %}
 <section class="hero-container reveal">
   <div class="hero-header">
     <div class="hero-pill-badge">
@@ -86,7 +94,11 @@
         <polyline points="12 5 19 12 12 19"></polyline>
       </svg>
     </a>
+    <a class="btn btn-ghost hero-live-btn" href="{{ url_for('live_videotron') }}" target="_blank" rel="noopener">
+      <span>📺 Live Hasil Voting</span>
+    </a>
     <p class="hero-footnote">Pilih peranmu (Siswa / Guru) untuk memverifikasi hak suara</p>
   </div>
 </section>
+{% endif %}
 {% endblock %}

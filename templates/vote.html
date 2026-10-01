@@ -19,6 +19,9 @@
         class="candidate-bubble theme-{{ c.theme }}"
         data-id="{{ c.id }}"
         data-name="{{ c.name }}"
+        data-visi="{{ c.visi }}"
+        data-misi="{{ c.misi|join('|') }}"
+        data-proker="{{ c.proker|join('|') }}"
         aria-label="Pilih nomor {{ c.id }} {{ c.name }}"
       >
         <span class="cand-num">{{ c.id }}</span>
@@ -42,6 +45,31 @@
     </div>
   </form>
 </dialog>
+
+<dialog class="candidate-detail-dialog" id="detail-dialog">
+  <form method="dialog" class="detail-box">
+    <button type="button" class="detail-close" id="close-detail">&times;</button>
+    <div class="detail-content">
+      <h2 id="detail-name"></h2>
+      <div class="detail-section">
+        <h3>Visi</h3>
+        <p id="detail-visi"></p>
+      </div>
+      <div class="detail-section">
+        <h3>Misi</h3>
+        <ul id="detail-misi"></ul>
+      </div>
+      <div class="detail-section">
+        <h3>Program Kerja</h3>
+        <ul id="detail-proker"></ul>
+      </div>
+      <div class="detail-actions">
+        <button value="cancel" class="btn btn-ghost">Tutup</button>
+        <button type="button" class="btn btn-primary" id="detail-vote-btn">Pilih Kandidat Ini</button>
+      </div>
+    </div>
+  </form>
+</dialog>
 {% endblock %}
 {% block scripts %}
 <script>
@@ -50,19 +78,59 @@
     var hidden = document.getElementById("candidate_id");
     var dialog = document.getElementById("confirm-dialog");
     var nameEl = document.getElementById("confirm-name");
+    var detailDialog = document.getElementById("detail-dialog");
+    var detailName = document.getElementById("detail-name");
+    var detailVisi = document.getElementById("detail-visi");
+    var detailMisi = document.getElementById("detail-misi");
+    var detailProker = document.getElementById("detail-proker");
+    var detailVoteBtn = document.getElementById("detail-vote-btn");
+    var closeDetail = document.getElementById("close-detail");
     var pendingId = null;
 
     document.querySelectorAll(".candidate-bubble").forEach(function (btn) {
       btn.addEventListener("click", function () {
         pendingId = btn.getAttribute("data-id");
-        nameEl.textContent = "No. " + pendingId + " — " + btn.getAttribute("data-name");
-        if (typeof dialog.showModal === "function") {
-          dialog.showModal();
-        } else if (window.confirm("Pilih " + nameEl.textContent + "?")) {
-          hidden.value = pendingId;
-          form.submit();
+        var visi = btn.getAttribute("data-visi");
+        var misi = btn.getAttribute("data-misi").split("|");
+        var proker = btn.getAttribute("data-proker").split("|");
+        var name = btn.getAttribute("data-name");
+
+        detailName.textContent = "No. " + pendingId + " — " + name;
+        detailVisi.textContent = visi;
+        
+        detailMisi.innerHTML = "";
+        misi.forEach(function (m) {
+          var li = document.createElement("li");
+          li.textContent = m;
+          detailMisi.appendChild(li);
+        });
+
+        detailProker.innerHTML = "";
+        proker.forEach(function (p) {
+          var li = document.createElement("li");
+          li.textContent = p;
+          detailProker.appendChild(li);
+        });
+
+        if (typeof detailDialog.showModal === "function") {
+          detailDialog.showModal();
         }
       });
+    });
+
+    closeDetail.addEventListener("click", function () {
+      detailDialog.close();
+    });
+
+    detailVoteBtn.addEventListener("click", function () {
+      detailDialog.close();
+      nameEl.textContent = detailName.textContent;
+      if (typeof dialog.showModal === "function") {
+        dialog.showModal();
+      } else if (window.confirm("Pilih " + nameEl.textContent + "?")) {
+        hidden.value = pendingId;
+        form.submit();
+      }
     });
 
     dialog.addEventListener("close", function () {

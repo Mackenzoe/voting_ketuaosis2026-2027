@@ -11,8 +11,10 @@ import re
 import secrets
 import sqlite3
 import threading
+from datetime import datetime
 from functools import lru_cache, wraps
 from pathlib import Path
+from dotenv import load_dotenv
 
 from flask import (
     Flask,
@@ -30,6 +32,8 @@ BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 DB_PATH = BASE_DIR / "votes.db"
 
+load_dotenv(BASE_DIR / ".env")
+
 GRADE_FILES = {
     "10": "KELAS 10.csv",
     "11": "KELAS 11.csv",
@@ -40,11 +44,18 @@ GRADE_FILES = {
 BONUS_CANDIDATE_ID = 1
 BONUS_POINTS = 15
 
-GURU_LOGIN_USER = "Guru IGS"
-GURU_LOGIN_PASS = "IGS123"
+GURU_LOGIN_USER = os.environ.get("GURU_USERNAME")
+GURU_LOGIN_PASS = os.environ.get("GURU_PASSWORD")
 
-ADMIN_USER = "osissmaigs"
-ADMIN_PASS = "nathangantengdanbaikhati"
+ADMIN_USER = os.environ.get("ADMIN_USERNAME")
+ADMIN_PASS = os.environ.get("ADMIN_PASSWORD")
+
+VOTING_CLOSE_DATETIME = datetime(2026, 10, 2, 23, 59, 0)  # 2 Oktober 2026, 23:59 WIB
+
+
+def is_voting_closed() -> bool:
+    """Check if voting period has ended."""
+    return datetime.now() >= VOTING_CLOSE_DATETIME
 
 CANDIDATES = [
     {
@@ -52,18 +63,61 @@ CANDIDATES = [
         "name": "Nanda Syahnila Mufidah",
         "image": "img/nanda.jpg",
         "theme": "pink",
+        "visi": "Menjadi ruang utama untuk berkreativitas, bertumbuh, dan berkolaborasi secara aktif guna membentuk generasi IGS yang tangguh.",
+        "misi": [
+            "K - Kolaboratif: Membangun budaya kolaborasi yang aktif melalui sinergi antara siswa, guru, alumni, klub, serta pihak eksternal guna memperluas kesempatan pengembangan diri.",
+            "I - Inovatif: Mengoptimalkan peran OSIS sebagai wadah penggerak kegiatan sekolah melalui program kerja yang inovatif, terukur, dan berorientasi pada kebutuhan siswa.",
+            "T - Terbuka: Mengembangkan budaya kepemimpinan yang berintegritas, bertanggung jawab, serta terbuka terhadap evaluasi melalui pelaksanaan program yang memiliki sasaran terukur sebagai wujud akuntabilitas organisasi.",
+            "A - Aspiratif: Menjadikan aspirasi siswa sebagai landasan dalam merancang program yang relevan, inovatif, dan berdampak."
+        ],
+        "proker": [
+            "STUDENT'S VOICE (Terbuka – Aspiratif): Memberikan kesempatan kepada seluruh siswa untuk mengajukan ide, aspirasi, dan usulan kegiatan dengan tetap mempertimbangkan aspek kelayakan dan manfaat.",
+            "IGS CONNECT (Kolaboratif): Program kolaborasi antara OSIS dan pihak eksternal yang bertujuan memperluas jaringan serta kesempatan pengembangan diri siswa melalui workshop, sharing session bersama alumni, dan kegiatan sosial.",
+            "IGS EXPLORER (Inovatif): Program yang bertujuan memperluas wawasan, mengenalkan perkembangan teknologi dan inovasi, serta membantu siswa mendapatkan gambaran dunia profesional melalui kunjungan industri, observasi lapangan, dan sesi inspiratif."
+        ]
     },
     {
         "id": 2,
         "name": "Marcelo William L. Tobing",
         "image": "img/marcelo.jpg",
         "theme": "blue",
+        "visi": "Terus menumbuhkan rasa kepercayaan siswa terhadap OSIS, mencoba semakin mengaktifkan partisipasi siswa dalam event-event yang berjalan, menumbuhkan rasa nasionalis siswa, terus berusaha memberikan lingkungan yang positif dan disiplin bagi para siswa, tak terkecuali anggota OSIS, serta membantu para siswa untuk tetap berkembang bersama dalam prestasi akademik maupun non-akademik.",
+        "misi": [
+            "Bekerja sama dan berperan aktif bersama sekolah dalam mendukung kegiatan perlombaan atau kompetisi yang dijalankan siswa.",
+            "Bekerja sama dengan Guru Pancasila untuk terus meningkatkan dan mengingatkan pentingnya rasa nasionalis di dalam diri setiap siswa.",
+            "Merangkul siswa agar tidak ada yang merasa tersingkirkan, dengan cara memperbanyak event yang lebih bersifat kelompok dan tidak individualis, sehingga ikatan keharmonisan tetap terjaga.",
+            "C - Creativity: Mengutamakan kreativitas dan inovasi di dalam event yang akan dijalankan ke depannya.",
+            "E - Event's Evaluation: Tetap menjalankan variasi event yang diminati siswa dan mengevaluasi kembali event yang mendapat banyak kritikan.",
+            "L - Leadership: Membantu dan memberikan arahan kepada siswa-siswi agar seluruhnya dapat belajar menjadi pemimpin yang baik dan bijak.",
+            "O - Objectivity: Memberikan objektivitas dan pembagian tugas yang jelas di dalam lingkungan OSIS."
+        ],
+        "proker": [
+            "Mengundang alumni SMA IGS untuk membagikan pengalaman dan saran bagi siswa-siswi mengenai langkah-langkah mencapai universitas impian.",
+            "Mengadakan event atau lomba yang target pesertanya ialah anak-anak SD di Palembang untuk mencari dan mendukung bakat murid SD sejak dini.",
+            "Mengadakan nominasi-nominasi dalam jangka waktu tertentu yang sifatnya perkelas dan kelas yang memenangkan nominasi akan diberikan award.",
+            "Memberikan penghargaan kepada murid yang terbiasa datang lebih cepat dengan cara mengakumulasikan jam kedatangannya pada mesin absen.",
+            "Mengupayakan lingkungan sekolah yang bersih dan meminimalisir penggunaan plastik, serta menyediakan tempat sampah terpisah antara sampah organik dan anorganik.",
+            "Mengaktifkan kegiatan upacara dengan petugas di-rolling per-kelas setiap minggu dan memutarkan lagu-lagu daerah pada istirahat pertama."
+        ]
     },
     {
         "id": 3,
         "name": "Treesha",
         "image": "img/treesha.jpg",
         "theme": "gold",
+        "visi": "Menjadikan OSIS sebagai ruang kolaborasi yang transparan, adaptif, serta inovatif. Tempat setiap suara dihargai, setiap potensi berkembang dan setiap langkah membawa perubahan yang berarti.",
+        "misi": [
+            "Menjadi penghubung yang aktif antara siswa dan pihak sekolah dalam menyampaikan aspirasi, kreativitas, serta ide dari siswa/i IGS.",
+            "Menyelenggarakan kegiatan yang responsif terhadap dinamika, isu terkini, dan kebutuhan nyata para siswa di sekolah.",
+            "Menjadikan OSIS sebagai organisasi yang membantu pergerakan kegiatan yang kreatif dan inovatif dalam bidang akademik, non akademik, maupun perkembangan karakter.",
+            "Meningkatkan kesolidaritasan antara OSIS di IGS serta melakukan evaluasi, improvisasi, dan berperan aktif dalam berjalannya acara."
+        ],
+        "proker": [
+            "Preparation: Mengadakan event dan workshop yang melibatkan para peserta untuk perkembangan karakter serta jati diri siswa siswi IGS.",
+            "HEAR THE VOICE: Meningkatkan partisipasi peserta dengan membuka survei agar event berjalan sesuai minat peserta, serta membuka wadah aspirasi siswa melalui kotak saran dan forum diskusi rutin.",
+            "GROWING: Membangun kedisiplinan, kebersamaan, dan kekompakan dari seluruh anggota OSIS agar event berjalan lancar.",
+            "Next Step: Membuat kegiatan yang berkelanjutan serta melakukan evaluasi dari OSIS sebelumnya agar bisa di improvisasi di kabinet ini."
+        ]
     },
 ]
 
@@ -194,7 +248,7 @@ def classes_for_grade(grade: str) -> tuple[str, ...]:
     seen: dict[str, None] = {}
     for s in students:
         seen.setdefault(s["kelas"], None)
-    return tuple(sorted(seen.keys(), key=_class_sort_key))
+    return tuple(sorted(seen.keys(), key=_class_sort_key, reverse=True))
 
 
 def _class_sort_key(name: str):
@@ -365,6 +419,33 @@ def pending_voters() -> dict[str, list[dict]]:
     return {"siswa": pending_siswa, "guru": pending_guru}
 
 
+def all_voters_with_votes() -> list[dict]:
+    """Get all voters with their vote details for admin panel."""
+    conn = get_db()
+    try:
+        rows = conn.execute(
+            """
+            SELECT v.role, v.nama, v.nis, v.kelas, v.tingkat, vt.candidate_id
+            FROM voters v
+            JOIN votes vt ON vt.voter_id = v.id
+            ORDER BY v.role, v.tingkat, v.kelas, v.nama
+            """
+        ).fetchall()
+        return [
+            {
+                "role": r["role"],
+                "nama": r["nama"],
+                "nis": r["nis"],
+                "kelas": r["kelas"],
+                "tingkat": r["tingkat"],
+                "candidate_id": r["candidate_id"],
+            }
+            for r in rows
+        ]
+    finally:
+        conn.close()
+
+
 def register_and_vote(
     *,
     role: str,
@@ -482,7 +563,8 @@ def admin_required(view):
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    voting_closed = is_voting_closed()
+    return render_template("home.html", voting_closed=voting_closed)
 
 
 @app.route("/peran")
@@ -560,15 +642,15 @@ def verify_siswa():
 
     if request.method == "POST":
         nama = (request.form.get("nama") or "").strip()
-        nisn = _norm_nis(request.form.get("nisn") or request.form.get("nis") or "")
-        if not nama or not nisn:
-            flash("Mohon isi Nama Lengkap dan NISN.", "error")
+        nis = _norm_nis(request.form.get("nis") or "")
+        if not nama or not nis:
+            flash("Mohon isi Nama Lengkap dan NIS.", "error")
             return render_template("verify_siswa.html")
 
-        student = find_student(session["tingkat"], session["kelas"], nama, nisn)
+        student = find_student(session["tingkat"], session["kelas"], nama, nis)
         if not student:
             flash(
-                "Data tidak cocok. Pastikan Nama Lengkap dan NISN sesuai "
+                "Data tidak cocok. Pastikan Nama Lengkap dan NIS sesuai "
                 "dengan data kelas yang dipilih.",
                 "error",
             )
@@ -652,6 +734,10 @@ def pilih_guru():
 
 @app.route("/vote", methods=["GET", "POST"])
 def vote():
+    if is_voting_closed():
+        flash("Maaf, periode voting telah berakhir pada 2 Oktober 2026 pukul 23:59 WIB.", "error")
+        return redirect(url_for("home"))
+    
     if not session.get("verified") or not session.get("voter_key"):
         return redirect(url_for("role"))
 
@@ -750,6 +836,7 @@ def admin_panel():
     stats = participation_stats()
     pending = pending_voters()
     board = scoreboard()
+    all_votes = all_voters_with_votes()
     return render_template(
         "admin.html",
         stats=stats,
@@ -757,10 +844,11 @@ def admin_panel():
         pending_guru=pending["guru"],
         board=board,
         bonus_points=BONUS_POINTS,
+        all_votes=all_votes,
     )
 
 
-@app.route("/live-videotron")
+@app.route("/liveboard")
 def live_videotron():
     """Papan skor bersih untuk layar videotron sekolah."""
     return render_template(
