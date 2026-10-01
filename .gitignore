@@ -1,9 +1,15 @@
-# Voting OSIS
+# Folder data sensitif (berisi file CSV)
+data/
+
+# Database SQLite
 votes.db
-votes.db-*
+*.db
+*.sqlite3
+
+# Cache Python
 __pycache__/
 *.pyc
-.venv/
-venv/
+
+# Environment / File konfigurasi (jika ada ke depannya)
 .env
-*.log
+venv/
